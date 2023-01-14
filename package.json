@@ -1,0 +1,32 @@
+{
+  "name": "puppescraper",
+  "version": "1.0.0",
+  "main": "app.ts",
+  "license": "MIT",
+  "scripts": {
+    "dev": "nodemon app.ts"
+  },
+  "author": {
+    "name": "Raphael Oliveira",
+    "email": "raphael.foliveira1@gmail.com"
+  },
+  "repository": {
+    "url": "github.com/raphael-foliveira/puppescraper"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "nodemon": "^2.0.20",
+    "puppeteer": "^19.5.2",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.4"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.15",
+    "@types/node": "^18.11.18",
+    "@types/puppeteer": "^7.0.4",
+    "@typescript-eslint/eslint-plugin": "^5.48.1",
+    "@typescript-eslint/parser": "^5.48.1",
+    "eslint": "^8.31.0"
+  }
+}

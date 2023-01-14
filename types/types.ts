@@ -8,6 +8,6 @@ export interface ProductInfo {
 }
 
 export interface ProductPrice {
-    hddOption: string
+    hdd: string
     price: number
 }

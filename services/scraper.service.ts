@@ -44,13 +44,13 @@ class ScraperService {
 	
 	async getProductDetails(productUrl: string): Promise<ProductInfo> {
 		await this.page.goto(productUrl);
-		const title = await this.page.$eval(`div.caption > h4:nth-child(2)`, (titleElement) => titleElement.innerText);
+		const model = await this.page.$eval(`div.caption > h4:nth-child(2)`, (titleElement) => titleElement.innerText);
 		const description = await this.page.$eval(`p.description`, (descriptionElement => descriptionElement.innerText));
 		const prices = await this.getProductPrices();
 		const rating = await this.page.$$eval(`div.ratings span.glyphicon-star`, (stars) => stars.length);
 		const numberOfReviews = await this.page.$eval(`div.ratings p`, (numberOfReviewsElement) => parseInt(numberOfReviewsElement.innerText));
 		return {
-			model: title,
+			model,
 			prices,
 			description,
 			rating,
@@ -65,11 +65,11 @@ class ScraperService {
 		});
 
 		const prices: ProductPrice[] = [];
-		for (const option of hddOptions) {
-			await this.page.$eval(`button[value="${option}"]`, (button) => button.click());
+		for (const hdd of hddOptions) {
+			await this.page.$eval(`button[value="${hdd}"]`, (button) => button.click());
 			const price = await this.page.$eval(`h4.price`, (price) => parseFloat(price.innerText.replace("$","")));
 			prices.push({
-				hddOption: option,
+				hdd,
 				price
 			});
 		}
@@ -80,7 +80,6 @@ class ScraperService {
 const setupScraper = async () => {
 	const browser = await puppeteer.launch({
 		headless: false,
-		args: ["--start-fullscreen"]
 	});
 	const page = await browser.newPage();
 	const scraperService = new ScraperService(browser, page);

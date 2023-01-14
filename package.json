@@ -4,7 +4,7 @@
   "main": "app.ts",
   "license": "MIT",
   "scripts": {
-    "dev": "nodemon app.ts"
+    "start": "nodemon app.ts"
   },
   "author": {
     "name": "Raphael Oliveira",

@@ -79,7 +79,7 @@ class ScraperService {
 
 const setupScraper = async () => {
 	const browser = await puppeteer.launch({
-		headless: false,
+		headless: true,
 	});
 	const page = await browser.newPage();
 	const scraperService = new ScraperService(browser, page);

@@ -1,4 +1,5 @@
-import puppeteer, { Browser, Page } from "puppeteer";
+/// <reference lib="dom"/> 
+import puppeteer, { Browser, JSHandle, Page } from "puppeteer";
 import { ProductInfo, ProductPrice } from "../types/types";
 
 class ScraperService {
@@ -34,7 +35,7 @@ class ScraperService {
 	
 	async getProductLinks(brand: string) {
 		await this.page.waitForSelector(`a[title*="${brand}"i]`);
-		const productUrls = await this.page.$$eval(`a[title*="${brand}"i]`, (elements) => {
+		const productUrls = await this.page.$$eval(`a[title*="${brand}"i]`, (elements: HTMLAnchorElement[]) => {
 			return elements.map((e) => {
 				return e.href;
 			});
@@ -45,11 +46,11 @@ class ScraperService {
 	async getProductDetails(productUrl: string): Promise<ProductInfo> {
 		await this.page.goto(productUrl);
 		await this.page.waitForSelector("div.caption");
-		const model = await this.page.$eval(`div.caption > h4:nth-child(2)`, (titleElement) => titleElement.innerText);
-		const description = await this.page.$eval(`p.description`, (descriptionElement => descriptionElement.innerText));
+		const model = await this.page.$eval(`div.caption > h4:nth-child(2)`, (titleElement: HTMLHeadingElement) => titleElement.innerText);
+		const description = await this.page.$eval(`p.description`, (descriptionElement: HTMLParagraphElement) => descriptionElement.innerText);
 		const prices = await this.getProductPrices();
-		const rating = await this.page.$$eval(`div.ratings span.glyphicon-star`, (stars) => stars.length);
-		const numberOfReviews = await this.page.$eval(`div.ratings p`, (numberOfReviewsElement) => parseInt(numberOfReviewsElement.innerText));
+		const rating = await this.page.$$eval(`div.ratings span.glyphicon-star`, (stars: HTMLSpanElement[]) => stars.length);
+		const numberOfReviews = await this.page.$eval(`div.ratings p`, (numberOfReviewsElement: HTMLParagraphElement) => parseInt(numberOfReviewsElement.innerText));
 		return {
 			model,
 			prices,
@@ -66,8 +67,8 @@ class ScraperService {
 		const prices: ProductPrice[] = [];
 		for (const option of hddOptions) {
 			await option.click();
-			const hdd = await option.getProperty("value").then((handle) => handle.jsonValue());
-			const price = await this.page.$eval(`h4.price`, (price) => parseFloat(price.innerText.replace("$","")));
+			const hdd = await option.getProperty("value").then((handle: JSHandle<string>) => handle.jsonValue());
+			const price = await this.page.$eval(`h4.price`, (price: HTMLHeadingElement) => parseFloat(price.innerText.replace("$","")));
 			prices.push({
 				hdd,
 				price

@@ -34,6 +34,7 @@ class ScraperService {
 	}
 	
 	async getProductLinks(brand: string) {
+		await this.page.waitForSelector(`a[title*="${brand}"i]`);
 		const productUrls = await this.page.$$eval(`a[title*="${brand}"i]`, (elements) => {
 			return elements.map((e) => {
 				return e.href;
@@ -44,6 +45,7 @@ class ScraperService {
 	
 	async getProductDetails(productUrl: string): Promise<ProductInfo> {
 		await this.page.goto(productUrl);
+		await this.page.waitForSelector("div.caption");
 		const model = await this.page.$eval(`div.caption > h4:nth-child(2)`, (titleElement) => titleElement.innerText);
 		const description = await this.page.$eval(`p.description`, (descriptionElement => descriptionElement.innerText));
 		const prices = await this.getProductPrices();
@@ -60,13 +62,12 @@ class ScraperService {
 	}
 
 	async getProductPrices(): Promise<ProductPrice[]> {
-		const hddOptions = await this.page.$$eval(`button.swatch:not(.disabled)`, async (hddOptionElements) => {
-			return hddOptionElements.map((option) => option.value);
-		});
+		const hddOptions = await this.page.$$(`button.swatch:not(.disabled)`);
 
 		const prices: ProductPrice[] = [];
-		for (const hdd of hddOptions) {
-			await this.page.$eval(`button[value="${hdd}"]`, (button) => button.click());
+		for (const option of hddOptions) {
+			await option.click();
+			const hdd = await option.getProperty("value").then((handle) => handle.jsonValue());
 			const price = await this.page.$eval(`h4.price`, (price) => parseFloat(price.innerText.replace("$","")));
 			prices.push({
 				hdd,

@@ -19,7 +19,6 @@ class ScraperService {
 			const productDetails = await this.getProductDetails(url);
 			products.push(productDetails);
 		}
-		this.page.close();
 		this.browser.close();
 		const filteredProducts = products.filter(p => p.description.toLowerCase().includes(brand.toLowerCase()));
 		filteredProducts.sort((a, b) => {

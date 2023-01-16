@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import router from "./routes/routes";
 
 dotenv.config();
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 8000;
 
 const app = express();
 app.use(json());
